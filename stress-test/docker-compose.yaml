@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  kafka-producer-perf-test:
+    image: confluentinc/cp-server:7.3.0
+    command: >
+      /usr/bin/kafka-producer-perf-test
+      --topic topic-perf
+      --num-records 20000
+      --record-size 5000
+      --throughput -1
+      --producer.config /etc/client.properties
+    volumes:
+      - ./client.properties:/etc/client.properties
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    external: true
