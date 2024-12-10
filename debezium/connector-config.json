@@ -1,0 +1,28 @@
+{
+    "name": "source-mongodb-connector",
+    "config": {
+      "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+      "tasks.max": "1",
+      "mongodb.connection.string": "mongodb+srv://connect_string/",
+      "mongodb.name": "mongodb_name",
+      "mongodb.ssl.enabled": "true",
+      "database.include.list": "mongodb_database_name",
+      "collection.include.list": "mongodb_collection_name",
+      "database.history.kafka.bootstrap.servers": "bootstrap_server_string",
+      "topic.prefix": "mongodb_topic_prefix",
+      "capture.mode": "change_streams_update_full",
+      "snapshot.mode": "initial",
+      "topic.creation.default.replication.factor": 3,
+      "topic.creation.default.partitions": 15,
+      "topic.creation.default.cleanup.policy": "delete",
+      "topic.creation.default.retention.ms": 10800000,
+      "producer.linger.ms": "0",
+      "producer.batch.size": "5000",
+      "producer.max.request.size": "5000000",
+      "producer.compression.type": "gzip",
+      "producer.acks": "1",
+      "producer.receive.buffer.bytes": "-1",
+      "producer.send.buffer.bytes": "-1",
+      "producer.max.in.flight.requests.per.connection": 2
+    }
+}

@@ -1,0 +1,47 @@
+version: '2.1'
+services:
+  source-connector:
+    image: quay.io/debezium/connect:2.4.2.Final
+    container_name: source-connector
+    restart: always
+    ports:
+      - 8083:8083
+    environment:
+      GROUP_ID: source-mongo
+      CONFIG_STORAGE_TOPIC: source-connect-config
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3
+      OFFSET_STORAGE_TOPIC: source-connect-offset
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3
+      STATUS_STORAGE_TOPIC: source-connect-status
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
+      BOOTSTRAP_SERVERS: bootstrap_server
+
+      CONNECT_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_SASL_MECHANISM: SCRAM-SHA-512
+      CONNECT_SASL_JAAS_CONFIG: "org.apache.kafka.common.security.scram.ScramLoginModule required \
+          username=\"username\" \
+          password=\"password\";"
+      CONNECT_PLUGIN_PATH: /kafka/connect,/usr/share/java,/usr/share/java/plugins
+      CONNECT_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+      CONNECT_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,DELETE
+      CONNECT_ACCESS_CONTROL_ALLOW_HEADERS: origin,content-type,accept,authorization
+
+      CONNECT_PRODUCER_SASL_MECHANISM: SCRAM-SHA-512
+      CONNECT_PRODUCER_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_PRODUCER_SASL_JAAS_CONFIG: "org.apache.kafka.common.security.scram.ScramLoginModule required \
+          username=\"username\" \
+          password=\"password\";"
+      CONNECT_CONSUMER_SASL_MECHANISM: SCRAM-SHA-512
+      CONNECT_CONSUMER_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_CONSUMER_SASL_JAAS_CONFIG: "org.apache.kafka.common.security.scram.ScramLoginModule required \
+          username=\"username\" \
+          password=\"password\";"
+
+      CONNECT_REST_ADVERTISED_HOST_NAME: source-connect
+      CONNECT_REST_PORT: 8083
+      TOPIC_CREATION_DEFAULT_CLEANUP_POLICY: compact
+
+    volumes:
+      - ./connector-config.json:/kafka/connect/mongodb-connector.json
+      - ./start-connect.sh:/start-connect.sh
+    entrypoint: ["sh", "-c", "/start-connect.sh"]
